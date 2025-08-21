@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
   
   async function summarizeContent(title, text) {
-    const apiKey = "REDACTED-ROTATE-THIS-KEY";
+    const apiKey = "[yourAPIkeyHere";
     const prompt = `Summarize the following content:\n\nTitle: ${title}\n\nText: ${text}\n\nSummary:`;
   
     const response1 = await fetch(
