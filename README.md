@@ -1,68 +1,34 @@
-# Summarizer — AI-Powered Chrome Extension
+# Page Summarizer
 
-A simple, Chrome extension that summarizes the content of the page you're browsing. Inspired by common tools, this extension gives you a clean reading experience, dispensing only the content that matters.
+A Chrome extension that summarizes the page you're reading. Pick a length, click once,
+get the summary in the popup.
 
----
+## Setup
 
-## What It Does
+You need your own [OpenAI API key](https://platform.openai.com/api-keys).
 
-Highlights a webpage needs just one click. It then digs in, extracts the core ideas, and serves you a neat, compact summary. Designed for blogs, articles, and document heavy pages. Think of it as your personal TL;DR companion in Chrome.
+1. `chrome://extensions` → enable Developer mode → **Load unpacked** → select this folder.
+2. Open the extension's **Details → Extension options** and paste your key.
 
----
+The key is kept in `chrome.storage.local` on your machine and is only ever sent to
+`api.openai.com`. It is not in the source, and it does not sync.
 
-## Project Structure
+## How it works
+
+The popup pulls the page text with `chrome.scripting.executeScript`, trims it to roughly
+24k characters so a long article can't blow past the context window, and sends one request
+to `/v1/chat/completions` with `gpt-4o-mini`.
+
+Three summary styles — brief, detailed, bullets — each a different instruction on the
+same call. Your last choice is remembered.
 
 ```
-summarizer/
-├─ background.js     # Extension logic for context menu or browser interaction
-├─ content.js        # Injected script that captures page content
-├─ popup.html        # UI presented when the extension icon is clicked
-├─ popup.js          # Handles UI logic and summary display
-├─ popup.css         # Styles for popup interface
-├─ manifest.json     # Chrome extension configuration
-├─ images/           # Icons or assets used
+summarize.js   endpoint, prompt, truncation, error messages
+popup.js       reads the tab, calls summarize, renders state
+options.js     stores the API key
 ```
 
----
+## Notes
 
-## Quick Setup
-
-1. **Clone this repo**  
-   ```bash
-   git clone https://github.com/szwedk/summarizer.git
-   cd summarizer
-   ```
-
-2. **Install (none required)**  
-   - No build tools needed—plain JavaScript and HTML.
-
-3. **Load to Chrome**
-   - Open `chrome://extensions/`
-   - Enable **Developer mode**
-   - Click **Load unpacked** → select this folder
-   - Voilà! Your extension is now active.
-
----
-
-## How to Use
-
-- Click the extension icon.
-- The webpage content loads.
-- Click **“Summarize”**.
-- A clean, concise summary appears—no fluff.
-
----
-
-## Ideas for Improvement
-
-- Add API-powered summarization (e.g. GPT-3, OpenAI, Cohere)
-- Allow user to select summary length (short, medium, long)
-- Let users copy or download summaries
-- Add browser context menu option: "Summarize this page"
-- Cache summaries for offline access or faster recall
-
----
-
-
-Created and maintained by **Kamil Szwed**.  
-Happy summarizing!
+Requesting a summary of a `chrome://` page or the Web Store won't work — Chrome blocks
+script injection there, and that's not something an extension can opt out of.

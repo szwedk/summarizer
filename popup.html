@@ -1,17 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <link rel="stylesheet" href="popup.css">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h1>Page Summarizer</h1>
-    <button id="summarizeButton">Summarize Page</button>
-    <div id="summaryOptions" class="hidden">
-      <h2>Summaries</h2>
-      <div id="summariesContainer"></div>
+    <div class="row">
+      <select id="style">
+        <option value="brief">Brief</option>
+        <option value="detailed">Detailed</option>
+        <option value="bullets">Bullets</option>
+      </select>
+      <button id="run">Summarize</button>
     </div>
-    <!-- Move the script tag to the end of the body -->
-    <script src="popup.js"></script>
+
+    <p id="status" class="status hidden"></p>
+    <div id="summary" class="summary hidden"></div>
+
+    <script type="module" src="popup.js"></script>
   </body>
 </html>
-
